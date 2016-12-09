@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.IO;
 
 public class CreateBundleWindow : EditorWindow
 {
@@ -119,14 +120,31 @@ public class CreateBundleWindow : EditorWindow
 
     }
     /// <summary>
-    /// 遍历目录及其子目录
+    /// 遍历目录及其子目录，并返回指定拓展名的文件名(包含路径)
     /// </summary>
-    /// <param name="recPath"></param>
-    /// <param name="paths"></param>
-    /// <param name="pathFiles"></param>
-    /// <param name="includeNames"></param>
+    /// <param name="recPath">要遍历的目录</param>
+    /// <param name="paths">用于递归查找的子目录</param>
+    /// <param name="pathFiles">返回查找的所有文件名(包含路径)</param>
+    /// <param name="includeNames">文件拓展名</param>
     static void Recursive(string recPath, List<string> paths, List<string> pathFiles, List<string> includeNames)
     {
+        string [] names = Directory.GetFiles(recPath);
+        string[] dirs = Directory.GetDirectories(recPath);
+        foreach(string filename in names)
+        {
+            string ext = Path.GetExtension(filename);
+            if (!includeNames.Contains(ext))
+            {
+                continue;
+            }
+            pathFiles.Add(filename.Replace('\\','/'));
+        }
+
+        foreach(string dir in dirs)
+        {
+            paths.Add(dir.Replace('\\', '/'));
+            Recursive(dir,paths,pathFiles,includeNames);
+        }
 
     }
 
@@ -149,10 +167,22 @@ public class CreateBundleWindow : EditorWindow
     {
 
     }
-
+    /// <summary>
+    /// active Prefabs，并将其标记ab名称为 name/filename
+    /// </summary>
+    /// <param name="pathFiles"></param>
+    /// <param name="name"></param>
     static void ActivePrefab(List<string> pathFiles, string name)
     {
+        if (!Directory.Exists(Application.dataPath + "/tempUIPrefab/"))
+        {
+            Directory.CreateDirectory(Application.dataPath + "/tempUIPrefab/");
+        }
 
+        for(int i = 0,max = pathFiles.Count;i<max;i++)
+        {
+            //string strBundleName = Edit
+        }
     }
 
     private static void Activate(Transform t)
