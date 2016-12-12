@@ -15,8 +15,14 @@ using System.IO;
         将 Assets/Role/prefab 文件夹下的预设体(x.prefab),打成role/x.ab
     
     ExportAssetCommonImage:
-        将 Assets/UI/icons/.../xxxfolder/ 下的图片(x(.png .jpg .bmp .tga)) 打成 icon/xxxfolder.ab
+        将 Assets/UI/pics/common/.../xxxfolder/ 下的图片(x(.png .jpg .bmp .tga)) 打成 common/xxxfolder.ab
+
+    ExportAssetIcons:
+        将 Assets/UI/icons/.../xxxfolder 下的图片(x(.png .jpg .bmp .tga))打成 icons/xxxfolder.ab
     
+    ExportCommonTexture:
+        将 Assets/UI/texture/.../xxxfolder 下的图片(x(.png .jpg .bmp .tga))打成 texture/xxxfolder/x.ab
+
     ExportAssetCommonAudio:
         将 Assets/Sounds 下的音频文件(x(.mp3 .wav .ogg .aiff)) 打成 audio/x.ab
     
@@ -24,12 +30,13 @@ using System.IO;
         将 Assets/Effect/effect_zhandou 下的音频文件(x.prefab) 打成 effect/x.ab
         将 Assets/Effect/effect_ui 下的音频文件(x.prefab) 打成 effect/x.ab
 
-    ExportAssetCommonAnimation:
-        将 Assets/Resources/Animation 下的动画(x(.anim .controller)) 打成 anim/x.ab
-    
     ExportAssetCommonOther:
         将 Assets/Tools/prefab 下的动画(x(.prefab .png)) 打成 other/x.ab
+
+    ExportAssetCommonAnimation:
+        将 Assets/Resources/Animation 下的动画(x(.anim .controller)) 打成 anim/x.abs
     
+   
 
  */
 
@@ -97,6 +104,7 @@ public class CreateBundleWindow : EditorWindow
     //通用的图片
     static void ExportAssetCommonImage()
     {
+        /*  
         List<string> tabPaths = ToolsConst.GetCommonImageFilePath();
         List<string> paths = new List<string>();
         List<string> pathFiles = new List<string>();
@@ -113,12 +121,14 @@ public class CreateBundleWindow : EditorWindow
         }
 
         SetAssetBundlesName(pathFiles, "icon");
+        */
+        ExportAssetSprites(ToolsConst.GetCommonImageFilePath(), "common");
     }
 
 
     static void ExportAssetIcons() 
     {
-
+        ExportAssetSprites(ToolsConst.GetIconsFilePath(), "icons");
     }
 
     /// <summary>
@@ -127,16 +137,52 @@ public class CreateBundleWindow : EditorWindow
     /// <param name="tabPaths"></param>
     /// <param name="abName"></param>
     /// <param name="extList"></param>
-    private static void ExprotAssetSprites(List<string> tabPaths, string abName, List<string> extList = null)
+    private static void ExportAssetSprites(List<string> tabPaths, string abName, List<string> extList = null)
     {
+        List<string> paths = new List<string>();
+        List<string> pathFiles = new List<string>();
 
+        if(extList == null)
+        {
+            List<string> includeNames = new List<string>();
+            includeNames.Add(".png");
+            includeNames.Add(".jpg");
+            includeNames.Add(".bmp");
+            includeNames.Add(".tga");
+
+            extList = includeNames;
+        }
+        foreach(var v in tabPaths)
+        {
+            Recursive(v, paths, pathFiles, extList);
+        }
+
+        SetAssetBundlesName(pathFiles,abName);
     }
+
     /// <summary>
-    /// 导出不打图集的sha
+    /// 不打图集的散图
     /// </summary>
     static void ExportCommonTexture()
     {
+        List<string> tabPaths = ToolsConst.GetCommonTextureFilePath();
 
+        List<string> paths = new List<string>();
+        List<string> pathFiles = new List<string>();
+        List<string> includeNames = new List<string>();
+
+        includeNames.Add(".png");
+        includeNames.Add(".jpg");
+        includeNames.Add(".bmp");
+        includeNames.Add(".tga");
+
+        foreach (var v in tabPaths)
+        {
+            Recursive(v, paths, pathFiles, includeNames);
+        }
+
+        //给文件设置AssetBundleName
+        SetAssetBundlesNameByFileName(pathFiles, "texture");
     }
 
     static void ExportAssetCommonFont()
@@ -262,7 +308,16 @@ public class CreateBundleWindow : EditorWindow
 
     static void SetAssetBundlesNameByFileName(List<string> pathFiles, string name)
     {
-
+        for (int i = 0, max = pathFiles.Count; i < max; i++)
+        {
+            string strBundleName = EditorTools.GetParentFileName(pathFiles[i], 2) + "/" + EditorTools.GetFileName(pathFiles[i]);
+            string newfile = pathFiles[i].Replace(Application.dataPath, "Assets");
+            //在代码中给资源设置AssetBundleName
+            AssetImporter assetImporter = AssetImporter.GetAtPath(newfile);
+            assetImporter.assetBundleName = name + "/" + strBundleName + ".ab";
+            //assetImporter.assetBundleVariant = "ab";
+            EditorUtility.DisplayProgressBar(strBundleName, "", (float)i / (float)max);
+        }
     }
 
     /// <summary>

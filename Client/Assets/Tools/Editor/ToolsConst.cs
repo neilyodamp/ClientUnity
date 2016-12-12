@@ -23,7 +23,7 @@ public class ToolsConst{
     public static List<string> GetCommonImageFilePath()
     {
         List<string> uiPaths = new List<string>();
-        uiPaths.Add(Application.dataPath + "/UI/icons");
+        uiPaths.Add(Application.dataPath + "/UI/pics/common");
         return uiPaths;
     }
 
@@ -66,6 +66,16 @@ public class ToolsConst{
         uiPaths.Add(Application.dataPath + "/Tools/prefab");
         return uiPaths;
     }
-
-
+    public static List<string> GetIconsFilePath()
+    {
+        List<string> uiPaths = new List<string>();
+        uiPaths.Add(Application.dataPath + "/UI/icons");
+        return uiPaths;
+    }
+    public static List<string> GetCommonTextureFilePath()
+    {
+        List<string> uiPaths = new List<string>();
+        uiPaths.Add(Application.dataPath + "/UI/texture");
+        return uiPaths;
+    }
 }
