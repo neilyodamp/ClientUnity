@@ -36,14 +36,13 @@ using System.IO;
     ExportAssetCommonAnimation:
         将 Assets/Resources/Animation 下的动画(x(.anim .controller)) 打成 anim/x.abs
     
-   
-
  */
 
 
 public class CreateBundleWindow : EditorWindow
 {
 
+    [MenuItem("Tools/ExportAssetBundle")]
     static void ExportAssetBundle()
     {
         //1.清理掉原来所有的AB名称
