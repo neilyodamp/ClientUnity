@@ -5,6 +5,7 @@ public class ToolsConst{
     public const string UIPrefabPath = "Assets/UI/prefab";
     public const string AssetBundlesOutPutPath = "Assets/StreamingAssets";
     public const string TMPPREFABPATH = @"Assets/tempUIPrefab/";
+    public const string UI_CODE_PATH = @"Assets/Scripts/view/";
 
     public static List<string> GetCommonUIFilePath()
     {
