@@ -25,4 +25,22 @@ public class EditorTools {
         string[] filenames = path.Split('/');
         return filenames[filenames.Length - parentIndex];
     }
+    /// <summary>
+    /// 获得节点的相对路径
+    /// </summary>
+    /// <param name="go"></param>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static string GetPath(GameObject go, GameObject root = null)
+    {
+        string path = go.name;
+        Transform parent = go.transform.parent;
+        while (parent != null && parent.gameObject != root)
+        {
+            path = parent.gameObject.name + "/" + path;
+            parent = parent.parent;
+        }
+
+        return path;
+    }
 }
